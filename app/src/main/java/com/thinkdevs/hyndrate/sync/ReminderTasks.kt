@@ -1,6 +1,7 @@
 package com.thinkdevs.hyndrate.sync
 
 import android.content.Context
+import com.thinkdevs.hyndrate.utilities.Constants
 import com.thinkdevs.hyndrate.utilities.NotificationUtils
 import com.thinkdevs.hyndrate.utilities.PreferenceUtilities
 
@@ -28,7 +29,14 @@ class ReminderTasks {
                 incrementWaterCount(context)
             }else if(ACTION_DISMISS_NOTIFICATION.equals(action)){
                 NotificationUtils.clearAllNotifications(context)
+            }else if(Constants.ACTION_CHARGING_REMINDER.equals(action)){
+                issueChargingReminder(context)
             }
+        }
+
+        private fun issueChargingReminder(context: Context) {
+            PreferenceUtilities.incrementChargingReminderCount(context)
+            NotificationUtils.remindUserBecauseCharging(context)
         }
 
 

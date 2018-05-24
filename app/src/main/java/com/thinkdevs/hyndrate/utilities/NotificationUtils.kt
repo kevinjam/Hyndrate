@@ -20,28 +20,15 @@ import com.thinkdevs.hyndrate.sync.WaterReminderIntentService
 
 
 object NotificationUtils {
-
-    /*
-     * This notification ID can be used to access our notification after we've displayed it. This
-     * can be handy when we need to cancel the notification, or perhaps update it. This number is
-     * arbitrary and can be set to whatever you like. 1138 is in no way significant.
-     */
-    private val WATER_REMINDER_NOTIFICATION_ID = 1138
     /**
      * This pending intent id is used to uniquely reference the pending intent
      */
-    private val WATER_REMINDER_PENDING_INTENT_ID = 3417
     /**
      * This notification channel id is used to link notifications to this channel
      */
     private val WATER_REMINDER_NOTIFICATION_CHANNEL_ID = "reminder_notification_channel"
     private val ACTION_DRINK_PENDING_INTENT_ID = 1
     private val ACTION_IGNORE_PENDING_INTENT_ID = 14
-
-    // COMPLETED (7) Create a method called remindUserBecauseCharging which takes a Context.
-    // This method will create a notification for charging. It might be helpful
-    // to take a look at this guide to see an example of what the code in this method will look like:
-    // https://developer.android.com/training/notify-user/build-notification.html
     fun remindUserBecauseCharging(context: Context) {
         // COMPLETED (8) Get the NotificationManager using context.getSystemService
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -75,7 +62,7 @@ object NotificationUtils {
 
         // COMPLETED (12) Trigger the notification by calling notify on the NotificationManager.
         // Pass in a unique ID of your choosing for the notification and notificationBuilder.build()
-        notificationManager.notify(WATER_REMINDER_NOTIFICATION_ID, notificationBuilder.build())
+        notificationManager.notify(Constants.WATER_REMINDER_NOTIFICATION_ID, notificationBuilder.build())
     }
 
     private fun ignoreReminderAction(context: Context): Action {
@@ -128,7 +115,7 @@ object NotificationUtils {
         val startActivityIntent = Intent(context, MainActivity::class.java)
         return PendingIntent.getActivity(
                 context,
-                WATER_REMINDER_PENDING_INTENT_ID,
+                Constants.WATER_REMINDER_PENDING_INTENT_ID,
                 startActivityIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
     }

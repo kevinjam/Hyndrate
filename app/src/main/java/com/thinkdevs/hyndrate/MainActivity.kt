@@ -1,6 +1,6 @@
 package com.thinkdevs.hyndrate
 
-import android.content.SharedPreferences
+import android.content.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -11,8 +11,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 import com.thinkdevs.hyndrate.sync.ReminderTasks
 import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
 import com.thinkdevs.hyndrate.sync.WaterReminderIntentService
-import android.content.Intent
+import android.content.Intent.ACTION_POWER_CONNECTED
+import android.content.Intent.ACTION_POWER_DISCONNECTED
+import com.thinkdevs.hyndrate.sync.ReminderUtilities
 import com.thinkdevs.hyndrate.utilities.NotificationUtils
+import android.content.Intent
+
+
 
 
 class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceChangeListener{
@@ -20,19 +25,22 @@ class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceC
 
 
     private var mToast: Toast? = null
+    var mchargingIntentFilter:IntentFilter?= null
+    var mChargingReceiver:ChargingBroadcastReceiver?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-//        mWaterCountDisplay = (TextView) findViewById(R.id.tv_water_count);
-//        mChargingCountDisplay = (TextView) findViewById(R.id.tv_charging_reminder_count);
-//        mChargingImageView = (ImageView) findViewById(R.id.iv_power_increment);
-
         /** Set the original values in the UI **/
         updateWaterCount()
         updateChargingReminderCount()
+
+        ReminderUtilities.scheduleChargingReminder(this)
+        mchargingIntentFilter = IntentFilter()
+        mchargingIntentFilter!!.addAction(ACTION_POWER_CONNECTED)
+        mchargingIntentFilter!!.addAction(ACTION_POWER_DISCONNECTED)
+        mChargingReceiver = ChargingBroadcastReceiver()
 
         /** Setup the shared preference listener **/
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -64,6 +72,16 @@ class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceC
 
     }
 
+
+    fun showcharging(ischarging:Boolean){
+        if (ischarging) {
+            iv_power_increment.setImageResource(R.drawable.ic_plug_red)
+
+        } else {
+            iv_power_increment.setImageResource(R.drawable.plug)
+        }
+    }
+
     /**
      * Adds one to the water count and shows a toast
      */
@@ -92,6 +110,17 @@ class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceC
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(mChargingReceiver, mchargingIntentFilter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        registerReceiver(mChargingReceiver, mchargingIntentFilter)
+
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         /** Cleanup the shared preference listener  */
@@ -100,4 +129,17 @@ class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceC
     }
 
 
+    // COMPLETED (2) Create an inner class called ChargingBroadcastReceiver that extends BroadcastReceiver
+    inner class ChargingBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent!!.action
+            val isCharging = action == ACTION_POWER_CONNECTED
+
+            showcharging(isCharging)
+
+        }
+
+    }
 }
+
+
