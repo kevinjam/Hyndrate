@@ -1,6 +1,7 @@
 package com.thinkdevs.hyndrate.sync
 
 import android.content.Context
+import com.thinkdevs.hyndrate.utilities.NotificationUtils
 import com.thinkdevs.hyndrate.utilities.PreferenceUtilities
 
 class ReminderTasks {
@@ -20,16 +21,20 @@ class ReminderTasks {
 
     companion object {
         val ACTION_INCREMENT_WATER_COUNT = "increment-water-count"
+        val ACTION_DISMISS_NOTIFICATION = "dismiss-notification"
 
         fun executeTask(context: Context, action:String){
             if(ACTION_INCREMENT_WATER_COUNT.equals(action)){
                 incrementWaterCount(context)
+            }else if(ACTION_DISMISS_NOTIFICATION.equals(action)){
+                NotificationUtils.clearAllNotifications(context)
             }
         }
 
 
         fun incrementWaterCount(context: Context){
             PreferenceUtilities.incrementWaterCount(context)
+            NotificationUtils.clearAllNotifications(context)
 
         }
 

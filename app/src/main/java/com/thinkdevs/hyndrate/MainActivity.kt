@@ -12,8 +12,7 @@ import com.thinkdevs.hyndrate.sync.ReminderTasks
 import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
 import com.thinkdevs.hyndrate.sync.WaterReminderIntentService
 import android.content.Intent
-
-
+import com.thinkdevs.hyndrate.utilities.NotificationUtils
 
 
 class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceChangeListener{
@@ -39,6 +38,11 @@ class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceC
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         prefs.registerOnSharedPreferenceChangeListener(this)
 
+
+        testNofication.setOnClickListener {
+            NotificationUtils.remindUserBecauseCharging(this)
+            println("Notification::::: " +NotificationUtils.remindUserBecauseCharging(this).toString())
+        }
     }
 
     /**
@@ -94,5 +98,6 @@ class MainActivity : AppCompatActivity() , SharedPreferences.OnSharedPreferenceC
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         prefs.unregisterOnSharedPreferenceChangeListener(this)
     }
+
 
 }
